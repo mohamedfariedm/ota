@@ -42,6 +42,9 @@ const columns = [
 interface User {
   id: number;
   name: string;
+  first_name?: string;
+  last_name?: string;
+  image?: string;
   task: string;
   deadline: string;
   overdue: string;

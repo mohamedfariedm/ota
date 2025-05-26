@@ -7,6 +7,11 @@ declare module "next-auth" {
     user: {
       id: number;
       email: string;
+      first_name?: string;
+      last_name?: string;
+      firstName?: string;
+      lastName?: string;
+      image?: string;
       // add other minimal user fields you need here
     };
   }
@@ -32,8 +37,8 @@ export const authOptions: NextAuthOptions = {
         console.log("auth-authorize", result);
         if (result.success && result.user) {
           // Return only minimal user info here
-          const { id, email} = result.user;
-          return { id, email};
+          const { id, email, first_name, last_name } = result.user;
+          return { id, email, first_name, last_name };
         } else {
           console.log("auth-failed");
           return null;
@@ -48,6 +53,10 @@ export const authOptions: NextAuthOptions = {
         token.user = {
           id: user.id,
           email: user.email,
+          //@ts-ignore
+          first_name: user.first_name,
+          //@ts-ignore
+          last_name: user.last_name,
         };
       }
       return token;
