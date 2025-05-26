@@ -12,11 +12,12 @@ import { CustomInput, SubmitBtnComponent } from "@/components/form";
 import { useTranslation } from "react-i18next";
 import { signInSchema, signInType } from "./sign-in.schema";
 import { routes } from "@/constants/routes";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 
 const LogInForm = () => {
-    const router = useRouter();
-    const locale = router.locale || "en"; // fallback
+      const pathname = usePathname(); // e.g. "/en/auth/login"
+
+      const locale = pathname?.split("/")[1] || "en";
       const redirectUrl = `/${locale}${routes.dashboard.index}`;
 
   const [isPending, startTransition] = React.useTransition();
