@@ -12,14 +12,8 @@ import { CustomInput, SubmitBtnComponent } from "@/components/form";
 import { useTranslation } from "react-i18next";
 import { signInSchema, signInType } from "./sign-in.schema";
 import { routes } from "@/constants/routes";
-import { usePathname } from "next/navigation";
 
 const LogInForm = () => {
-      const pathname = usePathname(); // e.g. "/en/auth/login"
-
-      const locale = pathname?.split("/")[1] || "en";
-      const redirectUrl = `/${locale}${routes.dashboard.index}`;
-
   const [isPending, startTransition] = React.useTransition();
 
   const { t } = useTranslation("signin");
@@ -40,13 +34,12 @@ const LogInForm = () => {
         email,
         password,
         redirect: false,
-          callbackUrl: redirectUrl, // or routes.dashboard.index
       });
       console.log("response", { response });
       if (response?.ok) {
         toast.success(t("toasts.login_success"));
         methods.reset();
-        window.location.assign(redirectUrl);
+        window.location.assign(routes.dashboard.index);
       } else if (response?.error) {
         toast.error(t("toasts.login_error"));
       }

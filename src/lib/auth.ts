@@ -1,14 +1,17 @@
 import Credentials from "next-auth/providers/credentials";
-
 import { loginUser } from "@/actions";
 import { NextAuthOptions } from "next-auth";
-import { User } from "@/types";
 
 declare module "next-auth" {
   interface Session {
-    user: User;
+    user: {
+      id: number;
+      email: string;
+      // add other minimal user fields you need here
+    };
   }
 }
+
 export const authOptions: NextAuthOptions = {
   providers: [
     Credentials({
@@ -18,20 +21,19 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
 
-      //@ts-ignore it expects id not id
+      //@ts-ignore
       async authorize(credentials) {
         const { email, password } = credentials as {
           email: string;
           password: string;
         };
 
-        const result = await loginUser("Credentials", {
-          email,
-          password,
-        });
+        const result = await loginUser("Credentials", { email, password });
         console.log("auth-authorize", result);
         if (result.success && result.user) {
-          return result.user;
+          // Return only minimal user info here
+          const { id, email} = result.user;
+          return { id, email};
         } else {
           console.log("auth-failed");
           return null;
@@ -41,22 +43,24 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      //console.log("jwt runs", { token, user, account });
       if (user) {
-        token.user = user;
+        // Store only minimal user info in the token
+        token.user = {
+          id: user.id,
+          email: user.email,
+        };
       }
-
       return token;
     },
     async session({ session, token }) {
-      if (token) {
+      if (token.user) {
+        // Map minimal token user data to session user
         session.user = token.user as any;
       }
       return session;
     },
   },
   secret: process.env.AUTH_SECRET,
-
   session: {
     strategy: "jwt",
   },

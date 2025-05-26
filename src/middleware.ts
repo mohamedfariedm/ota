@@ -3,7 +3,6 @@ import { getToken } from "next-auth/jwt";
 import { i18nRouter } from "next-i18n-router";
 import { i18nRouterConfig } from "./localization/i18nRouterConfig";
 import { routes } from "./constants/routes";
-import { error } from "console";
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({
@@ -12,7 +11,6 @@ export async function middleware(request: NextRequest) {
   });
   const { pathname } = request.nextUrl;
   const pathSegments = pathname.split("/").filter(Boolean);
-  console.log("Middleware check:", { pathname, token });
 
   // Get the actual route by removing the locale prefix if it exists
   let actualRoute = pathname;
@@ -40,15 +38,12 @@ export async function middleware(request: NextRequest) {
 
   // If user is not authenticated and trying to access any route except /auth/login
   if (!token && !actualRoute.includes("/auth/login")) {
-    error("User is not authenticated, redirecting to login page");  
-      console.log("Middleware check:", { pathname, token });
-  
     const loginUrl = new URL(`auth/login`, request.url);
     return NextResponse.redirect(loginUrl);
   }
 
   // If user is authenticated and trying to access /auth/login
-  if (token && actualRoute.includes("/auth/login")) {
+  if (token && actualRoute.startsWith("/auth/login")) {
     const origin = new URL(request.url).origin;
     const dashboardUrl = new URL(`${locale}${routes.dashboard.index}`, origin);
     return NextResponse.redirect(dashboardUrl);
