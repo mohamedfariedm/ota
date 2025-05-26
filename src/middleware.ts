@@ -43,7 +43,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // If user is authenticated and trying to access /auth/login
-  if (token && actualRoute.startsWith("/auth/login")) {
+  if (token && actualRoute.includes("/auth/login")) {
     const origin = new URL(request.url).origin;
     const dashboardUrl = new URL(`${locale}${routes.dashboard.index}`, origin);
     return NextResponse.redirect(dashboardUrl);
