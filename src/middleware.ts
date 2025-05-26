@@ -37,10 +37,10 @@ export async function middleware(request: NextRequest) {
   }
 
   // If user is not authenticated and trying to access any route except /auth/login
-  // if (!token && !actualRoute.includes("/auth/login")) {
-  //   const loginUrl = new URL(`auth/login`, request.url);
-  //   return NextResponse.redirect(loginUrl);
-  // }
+  if (!token && !actualRoute.includes("/auth/login")) {
+    const loginUrl = new URL(`auth/login`, request.url);
+    return NextResponse.redirect(loginUrl);
+  }
 
   // If user is authenticated and trying to access /auth/login
   if (token && actualRoute.startsWith("/auth/login")) {
