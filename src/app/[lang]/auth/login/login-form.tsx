@@ -34,6 +34,7 @@ const LogInForm = () => {
         email,
         password,
         redirect: false,
+          callbackUrl: "/dashboard", // or routes.dashboard.index
       });
       console.log("response", { response });
       if (response?.ok) {
