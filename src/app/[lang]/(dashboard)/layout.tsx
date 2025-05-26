@@ -1,7 +1,6 @@
 import React from "react";
 import DashBoardLayoutProvider from "@/providers/dashboard-layout-provider";
 import { getDictionary } from "@/localization/dictionaries";
-import AuthGuard from "@/providers/auth-guard";
 
 const DashboardLayout = async ({
   children,
@@ -16,9 +15,7 @@ const DashboardLayout = async ({
   const trans = await getDictionary(lang);
 
   return (
-    <AuthGuard>
       <DashBoardLayoutProvider trans={trans}>{children}</DashBoardLayoutProvider>
-    </AuthGuard> 
      );
 };
 
